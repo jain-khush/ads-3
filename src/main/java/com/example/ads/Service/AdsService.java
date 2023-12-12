@@ -45,7 +45,7 @@ public class AdsService {
         }
     }
 
-    public Ad addAd(AdDto adDto) {
+    public Ad addAd(AdDto adDto) {           // -------->
         Ad adnew = new Ad();
         BeanUtils.copyProperties(adDto, adnew);
         Optional<Company> companyOptional = companyRepo.findByCompanyName(adDto.getCompanyName());
@@ -76,14 +76,6 @@ public class AdsService {
         if (!options.isEmpty()) {
             int random = (int) (Math.random() * options.size());
             return options.get(random);
-        } else
-            return null;
-    }
-
-    public List<Ad> getAdsByCategorys(List<Categories> category) {
-        List<Ad> options = adsRepo.findAdsByCategories(category);
-        if (!options.isEmpty()) {
-            return options;
         } else
             return null;
     }
