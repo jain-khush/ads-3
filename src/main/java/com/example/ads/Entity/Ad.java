@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,7 +18,7 @@ public class Ad {
     private String description;
     private String externalLink;
     @Enumerated(EnumType.STRING)
-    private Categories category;
+    private List<Categories> category;
     private String imageLink;
 
 //    @JsonIgnore

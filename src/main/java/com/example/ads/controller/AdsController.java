@@ -51,19 +51,19 @@ public class AdsController {
 //        return adsService.addCompany(companyDto);
 //    }
 
-    public static AdDto adToAdDto(Ad ad,Company company){
+    public static AdDto adToAdDto(Ad ad, Company company) {
         AdDto updatedAdDto = new AdDto();
-        BeanUtils.copyProperties(ad,updatedAdDto);
-        if (company!=null) {
+        BeanUtils.copyProperties(ad, updatedAdDto);
+        if (company != null) {
             updatedAdDto.setCompanyId(company.getCompanyId());
             updatedAdDto.setCompanyName(company.getCompanyName());
         }
         return updatedAdDto;
     }
 
-    public static CompanyDto companyToCompanyDto(Company company){
+    public static CompanyDto companyToCompanyDto(Company company) {
         CompanyDto updatedCompanyDto = new CompanyDto();
-        BeanUtils.copyProperties(company,updatedCompanyDto);
+        BeanUtils.copyProperties(company, updatedCompanyDto);
         return updatedCompanyDto;
     }
 
@@ -72,8 +72,8 @@ public class AdsController {
         try {
             List<Ad> allAds = adsService.getAllAd();
             List<AdDto> allAdReturn = new ArrayList<>();
-            for(Ad ars: allAds){
-                allAdReturn.add(adToAdDto(ars,ars.getCompany()));
+            for (Ad ars : allAds) {
+                allAdReturn.add(adToAdDto(ars, ars.getCompany()));
             }
             return ResponseEntity.status(HttpStatus.OK).body(allAdReturn);
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class AdsController {
         try {
             List<Company> allCompanies = adsService.getAllcompanies();
             List<CompanyDto> allCompanyReturn = new ArrayList<>();
-            for(Company ars: allCompanies){
+            for (Company ars : allCompanies) {
                 allCompanyReturn.add(companyToCompanyDto(ars));
             }
             return ResponseEntity.status(HttpStatus.OK).body(allCompanyReturn);
@@ -97,29 +97,27 @@ public class AdsController {
 
     @GetMapping("/{companyId}")
     public ResponseEntity<List<AdDto>> getAdByCompanyId(@PathVariable String companyId) {
-        try{
+        try {
             List<Ad> adbycomp = adsService.getAdByCompanyId(companyId);
 //            AdDto adreturn = adToAdDto((companyId));
 //            List<Course> allCourseList = courseService.getAllCourse();
             List<AdDto> adreturn = new ArrayList<>();
             for (Ad ad : adbycomp) {
-                adreturn.add(adToAdDto(ad,ad.getCompany()));
+                adreturn.add(adToAdDto(ad, ad.getCompany()));
             }
             return ResponseEntity.status(HttpStatus.CREATED).body(adreturn);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
     @PostMapping("/addAd")
     public ResponseEntity<AdDto> addAd(@RequestBody AdDto adDto) {
-        try{
+        try {
             Ad ad = adsService.addAd(adDto);
 //            AdDto adDtoReturn = adToAdDto(ad,ad.getCompany());
             return ResponseEntity.status(HttpStatus.CREATED).body(adDto);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -129,10 +127,9 @@ public class AdsController {
     public ResponseEntity<AdDto> getRandomAd(@RequestParam String userId) {
         try {
             Ad randmAd = adsService.randomAd();
-            AdDto adToReturn = adToAdDto(randmAd,randmAd.getCompany());
+            AdDto adToReturn = adToAdDto(randmAd, randmAd.getCompany());
             return ResponseEntity.ok(adToReturn);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -152,23 +149,36 @@ public class AdsController {
     }
 
     @GetMapping("/adByCategory/{category}")
-    public ResponseEntity<AdDto> getAdByCategory(@PathVariable Categories category){
+    public ResponseEntity<AdDto> getAdByCategory(@PathVariable Categories category) {
 
-        try{
+        try {
             Ad adsByCategory = adsService.getAdByCategory(category);
-            AdDto adcategory = adToAdDto(adsByCategory,adsByCategory.getCompany());
+            AdDto adcategory = adToAdDto(adsByCategory, adsByCategory.getCompany());
             return ResponseEntity.status(HttpStatus.OK).body(adcategory);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
     }
 
     @GetMapping("/categories")
-    public List<Categories> getAllCategories(){
+    public List<Categories> getAllCategories() {
         return Arrays.asList(Categories.values());
 
+    }
+
+    @GetMapping("/adsbycategories")
+    public ResponseEntity<List<AdDto>> getAdsByCategorys(List<Categories> categories) {
+        try {
+            List<Ad> res = adsService.getAdsByCategorys(categories);
+            List<AdDto> adDtosRes = new ArrayList<>();
+            for (Ad item : res) {
+                adDtosRes.add(adToAdDto(item, item.getCompany()));
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(adDtosRes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
 }
