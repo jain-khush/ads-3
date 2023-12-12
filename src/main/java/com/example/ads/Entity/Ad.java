@@ -16,7 +16,8 @@ public class Ad {
     private String adId = UUID.randomUUID().toString();
     private String description;
     private String externalLink;
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private Categories category;
     private String imageLink;
 
 //    @JsonIgnore

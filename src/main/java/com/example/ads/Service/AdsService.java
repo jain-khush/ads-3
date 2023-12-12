@@ -3,6 +3,7 @@ package com.example.ads.Service;
 import com.example.ads.Dto.AdDto;
 import com.example.ads.Dto.CompanyDto;
 import com.example.ads.Entity.Ad;
+import com.example.ads.Entity.Categories;
 import com.example.ads.Entity.Company;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,34 +28,36 @@ public class AdsService {
         return allAds;
     }
 
+
+    public List<Company> getAllcompanies() {
+        List<Company> allCompanies = new ArrayList<>();
+        companyRepo.findAll().forEach(allCompanies::add);
+        return allCompanies;
+    }
+
     public List<Ad> getAdByCompanyId(String companyId) {
         Optional<Company> option = companyRepo.findById(companyId);
-        if (option.isPresent()){
-            Company company= option.get();
+        if (option.isPresent()) {
+            Company company = option.get();
             return company.getAds();
-        }
-        else{
+        } else {
             return null;
         }
     }
 
-    public Ad addAd(AdDto adDto) {
+    public Ad addAd(AdDto adDto) {           // -------->
         Ad adnew = new Ad();
-        BeanUtils.copyProperties(adDto,adnew);
-        Optional<Company> company = companyRepo.findById(adDto.getCompanyId());
-        if (company.isPresent()){
-            adnew.setCompany(company.get());
-        }
-        else{
-            return null;
-        }
+        BeanUtils.copyProperties(adDto, adnew);
+        Optional<Company> companyOptional = companyRepo.findByCompanyName(adDto.getCompanyName());
+        Company company = companyOptional.get();
+        adnew.setCompany(company);
         return adsRepo.save(adnew);
     }
 
 
-    public Company addCompany(CompanyDto companyDto){
+    public Company addCompany(CompanyDto companyDto) {
         Company compnew = new Company();
-        BeanUtils.copyProperties(companyDto,compnew);
+        BeanUtils.copyProperties(companyDto, compnew);
         return companyRepo.save(compnew);
     }
 
@@ -64,19 +67,20 @@ public class AdsService {
         if (!listAd.isEmpty()) {
             int randomIndex = (int) (Math.random() * listAd.size());
             return listAd.get(randomIndex);
-        }
-        else
-        return null;
-    }
-
-    public Ad getAdByCategory(String category){
-        List<Ad> options = adsRepo.findByCategory(category);
-        if (!options.isEmpty()){
-            int random = (int)(Math.random() * options.size());
-            return options.get(random);
-        }
-        else
+        } else
             return null;
     }
+
+    public Ad getAdByCategory(Categories category) {
+        List<Ad> options = adsRepo.findByCategory(category);
+        if (!options.isEmpty()) {
+            int random = (int) (Math.random() * options.size());
+            return options.get(random);
+        } else
+            return null;
+    }
+//    public Ad getAllCategory(){
+//
+//    }
 
 }

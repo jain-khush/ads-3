@@ -3,6 +3,7 @@ package com.example.ads.controller;
 import com.example.ads.Dto.AdDto;
 import com.example.ads.Dto.CompanyDto;
 import com.example.ads.Entity.Ad;
+import com.example.ads.Entity.Categories;
 import com.example.ads.Entity.Company;
 import com.example.ads.Service.AdsService;
 import org.springframework.beans.BeanUtils;
@@ -12,9 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 //import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/ad")
 public class AdsController {
@@ -77,6 +81,20 @@ public class AdsController {
         }
     }
 
+    @GetMapping("/getAllCompanies")
+    public ResponseEntity<List<CompanyDto>> getAllCompanies() {
+        try {
+            List<Company> allCompanies = adsService.getAllcompanies();
+            List<CompanyDto> allCompanyReturn = new ArrayList<>();
+            for(Company ars: allCompanies){
+                allCompanyReturn.add(companyToCompanyDto(ars));
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(allCompanyReturn);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GetMapping("/{companyId}")
     public ResponseEntity<List<AdDto>> getAdByCompanyId(@PathVariable String companyId) {
         try{
@@ -102,6 +120,7 @@ public class AdsController {
             return ResponseEntity.status(HttpStatus.CREATED).body(adDto);
         }
         catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -121,6 +140,9 @@ public class AdsController {
     @PostMapping("/addCompany")
     public ResponseEntity<CompanyDto> addNewCompany(@RequestBody CompanyDto companyDto) {
         try {
+//            if(companyDto.getCompanyName()==null){
+//                return null;
+
             Company company = adsService.addCompany(companyDto);
             CompanyDto companyDtoReturn = companyToCompanyDto(company);
             return ResponseEntity.status(HttpStatus.CREATED).body(companyDtoReturn);
@@ -129,8 +151,9 @@ public class AdsController {
         }
     }
 
-    @GetMapping("/adByCategory")
-    public ResponseEntity<AdDto> getAdByCategory(String category){
+    @GetMapping("/adByCategory/{category}")
+    public ResponseEntity<AdDto> getAdByCategory(@PathVariable Categories category){
+
         try{
             Ad adsByCategory = adsService.getAdByCategory(category);
             AdDto adcategory = adToAdDto(adsByCategory,adsByCategory.getCompany());
@@ -139,6 +162,12 @@ public class AdsController {
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+
+    }
+
+    @GetMapping("/categories")
+    public List<Categories> getAllCategories(){
+        return Arrays.asList(Categories.values());
 
     }
 
