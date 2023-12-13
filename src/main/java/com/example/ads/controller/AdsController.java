@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 //import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -152,7 +151,7 @@ public class AdsController {
     }
 
     @GetMapping("/adByCategory/{category}")
-    public ResponseEntity<AdDto> getAdByCategory(@PathVariable Categories category){
+    public ResponseEntity<AdDto> getAdByCategory(@PathVariable String category){
 
         try{
             Ad adsByCategory = adsService.getAdByCategory(category);
@@ -168,7 +167,14 @@ public class AdsController {
     @GetMapping("/categories")
     public List<Categories> getAllCategories(){
         return Arrays.asList(Categories.values());
-
     }
+//
+//    @GetMapping("/multiple")
+//    public List<Ad> getAdByMultipleCategories(@RequestBody List<String> category){
+//        List<Ad> adlis = adsService.findAdsByCategories(category);
+//        return adlis;
+//    }
+
+
 
 }
